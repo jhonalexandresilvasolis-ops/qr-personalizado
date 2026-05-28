@@ -830,7 +830,7 @@ class GeneradorQROptimizado:
 if __name__ == "__main__":
     URL   = sys.argv[1] if len(sys.argv) > 1 else "https://tu-sitio.com/"
     TEXTO = sys.argv[2] if len(sys.argv) > 2 else "Texto"
-    LOGO = "logos/logo_ejemplo.png"
+    LOGO  = sys.argv[3] if len(sys.argv) > 3 else "logos/logo_ejemplo.png"
     
     print("\n" + "=" * 80)
     print("🚀 QR PERSONALIZADO - FRUTOS BUTIÁ REALISTAS")
@@ -881,12 +881,10 @@ if __name__ == "__main__":
     print("\n📁 Archivo generado:")
     print("  • output/qr_personalizado.png")
     
-    print("\n💡 PARA CAMBIAR EL LOGO:")
-    print("  • Modifica la línea: LOGO = 'ruta/a/tu/logo.png'")
-    print("  • O ajusta tamaño en   tamanio_logo = int(tamanio * 0.7) línea 773")
-
-    print("\n💡 PARA CAMBIAR EL TEXTO:")
-    print("  • Pasalo como segundo argumento: python generarQR.py https://tu-sitio.com 'MiTexto'")
-    print("  • Ajusta el tamaño en la config: 'texto_escala': 0.9  (más alto = más grande)")
+    print("\n💡 USO:")
+    print("  python generarQR.py <URL> <Texto> [ruta/logo.png]")
+    print("  Ejemplos:")
+    print("    python generarQR.py https://tu-sitio.com/ 'Mi Marca'")
+    print("    python generarQR.py https://tu-sitio.com/ 'Mi Marca' logos/mi_logo.png")
   
     print("\n" + "=" * 80 + "\n")

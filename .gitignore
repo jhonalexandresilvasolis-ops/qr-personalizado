@@ -1,4 +1,8 @@
-output/*.png
-logos/*.png
+output/
+logos/
 __pycache__/
 *.pyc
+ 
+# Excepciones: archivos de ejemplo que sí deben commitearse
+!logos/logo_ejemplo.png
+!qr_personalizado.png
