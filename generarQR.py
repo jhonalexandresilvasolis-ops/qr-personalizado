@@ -1,7 +1,7 @@
 """
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  GENERADOR QR OPTIMIZADO - FRUTOS BUTIÁ REALISTAS                           ║
-║  MEJORA: Racimo denso, colgante y abundante como en foto real              ║
+║  GENERADOR QR PERSONALIZADO - FRUTOS BUTIÁ REALISTAS                        ║
+║  Con texto personalizable, logo, colores y decoraciones                    ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
@@ -29,9 +29,9 @@ except ImportError:
 
 
 class GeneradorQROptimizado:
-    """Generador QR con frutos Butiá REALISTAS."""
+    """Generador QR personalizado con frutos Butiá y texto configurable."""
     
-    # PALETA INSTITUCIONAL UTU ROCHA
+    # PALETA DE COLORES (personalizable)
     AZUL_INSTITUCIONAL = "#0038A8"
     VERDE_BUTIA = "#2d8a2d"
     AMARILLO_BUTIA = "#B99D4F"
@@ -83,7 +83,7 @@ class GeneradorQROptimizado:
                 'corona_como_fondo': True,
                 'sombras_intensidad': 0.25,
                 'usar_tipografia_pil': True,
-                'texto_utu_escala': 0.9,
+                'texto_escala': 0.6,
             }
         }
         return configs.get(self.variante, configs['equilibrado'])
@@ -582,15 +582,15 @@ class GeneradorQROptimizado:
                      cx + radio_int*0.4, cy + radio_int*0.4], 
                     outline=color, width=2)
     
-    def dibujar_texto_utu_pil(self, img: Image.Image, box_size: int, 
-                             modulos_x: int, modulos_y: int) -> Image.Image:
-        """Texto UTU."""
-        self._log("  📝 Dibujando texto 'UTU'...")
+    def dibujar_texto_personalizado(self, img: Image.Image, box_size: int, 
+                             modulos_x: int, modulos_y: int, texto: str = "Texto") -> Image.Image:
+        """Dibuja texto personalizado sobre el QR."""
+        self._log(f"  📝 Dibujando texto '{texto}'...")
         
         overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
         draw = ImageDraw.Draw(overlay)
         
-        font_size = int(box_size * 8 * self.config['texto_utu_escala'])
+        font_size = int(box_size * 8 * self.config['texto_escala'])
         
         try:
             font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
@@ -599,8 +599,6 @@ class GeneradorQROptimizado:
                 font = ImageFont.truetype("arial.ttf", font_size)
             except:
                 font = ImageFont.load_default()
-        
-        texto = "UTU"
         
         bbox = draw.textbbox((0, 0), texto, font=font)
         texto_ancho = bbox[2] - bbox[0]
@@ -710,8 +708,9 @@ class GeneradorQROptimizado:
             return False
     
     def generar_qr_optimizado(self, data: str, logo_path: Optional[str] = None,
-                             nombre_salida: str = "qr_realista.png") -> Tuple[Image.Image, dict]:
-        """Genera QR con frutos butiá REALISTAS."""
+                             nombre_salida: str = "qr_personalizado.png",
+                             texto_qr: str = "Texto") -> Tuple[Image.Image, dict]:
+        """Genera QR personalizado con texto, logo y decoraciones."""
         self._log(f"\n{'='*80}")
         self._log(f"Generando QR - Variante: {self.variante.upper()} [FRUTOS REALISTAS]")
         self._log(f"{'='*80}\n")
@@ -750,7 +749,7 @@ class GeneradorQROptimizado:
         
         modulos_x = (tamanio_mat + border * 2)
         modulos_y = (tamanio_mat + border * 2)
-        img = self.dibujar_texto_utu_pil(img, box_size, modulos_x, modulos_y)
+        img = self.dibujar_texto_personalizado(img, box_size, modulos_x, modulos_y, texto=texto_qr)
         
         if logo_path and os.path.exists(logo_path):
             img = self._incrustar_logo(img, logo_path, tamanio_img)
@@ -770,7 +769,7 @@ class GeneradorQROptimizado:
         """Incrusta logo en el centro del QR."""
         try:
             logo = Image.open(logo_path)
-            tamanio_logo = int(tamanio * 0.2)
+            tamanio_logo = int(tamanio * 0.5)
             logo.thumbnail((tamanio_logo, tamanio_logo), Image.LANCZOS)
             
             if logo.mode != 'RGBA':
@@ -829,11 +828,12 @@ class GeneradorQROptimizado:
 # ═══════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    URL = sys.argv[1] if len(sys.argv) > 1 else "https://utu-rocha.netlify.app/"
-    LOGO = "logos/logo_utu.png"
+    URL   = sys.argv[1] if len(sys.argv) > 1 else "https://tu-sitio.com/"
+    TEXTO = sys.argv[2] if len(sys.argv) > 2 else "Texto"
+    LOGO = "logos/logo_ejemplo.png"
     
     print("\n" + "=" * 80)
-    print("🚀 QR OPTIMIZADO - FRUTOS BUTIÁ REALISTAS")
+    print("🚀 QR PERSONALIZADO - FRUTOS BUTIÁ REALISTAS")
     print("✅ Racimo DENSO, COLGANTE y ABUNDANTE")
     print("✅ Colores amarillo-naranja naturales")
     print("=" * 80)
@@ -848,7 +848,8 @@ if __name__ == "__main__":
     img, metricas = gen.generar_qr_optimizado(
         data=URL,
         logo_path=LOGO if os.path.exists(LOGO) else None,
-        nombre_salida="output/qr_butia_realista.png"
+        nombre_salida="output/qr_personalizado.png",
+        texto_qr=TEXTO
     )
     
     print("\n" + "=" * 80)
@@ -878,10 +879,14 @@ if __name__ == "__main__":
     print("    • Ahora: 65 frutos densos, racimo colgante largo")
     
     print("\n📁 Archivo generado:")
-    print("  • output/qr_butia_realista.png")
+    print("  • output/qr_personalizado.png")
     
     print("\n💡 PARA CAMBIAR EL LOGO:")
     print("  • Modifica la línea: LOGO = 'ruta/a/tu/logo.png'")
-    print("  • O ajusta tamaño en _incrustar_logo() línea 889")
-    
+    print("  • O ajusta tamaño en   tamanio_logo = int(tamanio * 0.7) línea 773")
+
+    print("\n💡 PARA CAMBIAR EL TEXTO:")
+    print("  • Pasalo como segundo argumento: python generarQR.py https://tu-sitio.com 'MiTexto'")
+    print("  • Ajusta el tamaño en la config: 'texto_escala': 0.9  (más alto = más grande)")
+  
     print("\n" + "=" * 80 + "\n")
